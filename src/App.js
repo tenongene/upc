@@ -1,20 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
-import Users from './Users';
-import Posts from './Posts';
-import Comments from './Comments';
-import List from './List';
+import { useState, useEffect } from 'react';
+import Form from './Form';
+// import List from './List';
+import Table from './Table';
 
 function App() {
+	const API_URL = 'https://jsonplaceholder.typicode.com/';
+
+	const [reqType, setReqType] = useState('users');
+	const [items, setItems] = useState([]);
+
+	useEffect(() => {
+		const fetchItems = async () => {
+			try {
+				const response = await fetch(`${API_URL}${reqType}`);
+				const data = await response.json();
+				setItems(data);
+			} catch (err) {
+				console.log(err.message);
+			}
+		};
+
+		fetchItems();
+	}, [reqType]);
+
 	return (
 		<div className="App">
-			<Users />
+			<Form reqType={reqType} setReqType={setReqType} />
 
-			<Posts />
-
-			<Comments />
-
-			<List />
+            {/* <List items={items} /> */}
+            <Table items={items}/>
 		</div>
 	);
 }
